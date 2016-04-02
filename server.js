@@ -26,7 +26,7 @@ var emitNewReadings = function(socket, conn) {
 };
 
 io.on('connection', function (socket) {
-  r.connect({db: 'weather_balloon_tracker'}, function(err, conn) {
+  r.connect({db: 'tracker'}, function(err, conn) {
     emitInitialReadings(socket, conn);
     emitNewReadings(socket, conn);
   });

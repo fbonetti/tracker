@@ -4,19 +4,24 @@ import Task exposing (Task, andThen)
 import SocketIO
 import Json.Decode as Json exposing ((:=))
 import Result
-import Html exposing (Html, text, div)
+import Html exposing (Html, Attribute, text, div)
+import Html.Attributes exposing (id, style)
 import Dict exposing (Dict)
 
 -- MAIN
 
 main : Signal Html
 main =
-  (Signal.foldp update initModel >> Signal.map view) mainSignal
+  Signal.map view modelSignal
+
+modelSignal : Signal Model
+modelSignal =
+  Signal.foldp update initModel mainSignal
 
 mainSignal : Signal Action
 mainSignal =
   Signal.mergeMany
-    [ readings
+    [ readingsActions
     ]
 
 -- MODEL
@@ -55,8 +60,8 @@ readingDecoder =
     ("latitude" := Json.float)
     ("longitude" := Json.float)
 
-readings : Signal Action
-readings =
+readingsActions : Signal Action
+readingsActions =
   let
     handleResult result =
       case result of
@@ -66,6 +71,13 @@ readings =
     Signal.map
       (Json.decodeString readingDecoder >> handleResult)
       received.signal
+
+port outgoingReadings : Signal (List Reading)
+port outgoingReadings =
+  Signal.map (.readings >> Dict.values) modelSignal
+
+-- HELPERS
+
 
 -- UPDATE
 
@@ -88,5 +100,10 @@ update action model =
 
 view : Model -> Html
 view model =
-  div [] (model.readings |> Dict.values |> List.map (toString >> text))
+  div [ id "map", mapStyle ] []
 
+mapStyle : Attribute
+mapStyle =
+  style
+    [ ("height", "400px")
+    ]
