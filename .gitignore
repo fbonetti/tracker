@@ -4,3 +4,4 @@
 /rethinkdb_data
 /elm.js
 .env
+pkgscript.log
