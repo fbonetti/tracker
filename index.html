@@ -8,10 +8,12 @@
 </head>
 <body>
   <script>
-    var app = Elm.fullscreen(Elm.Main);
+    var app = Elm.fullscreen(Elm.Main, {
+      socketHost: window.location.hostname
+    });
     var map = new google.maps.Map(document.getElementById('map'), {
-      center: {lat: 42.1, lng: -87.6},
-      zoom: 8
+      center: {lat: 41.92, lng: -87.69},
+      zoom: 9
     });
     var markers = new Map();
 
